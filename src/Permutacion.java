@@ -11,6 +11,11 @@ public class Permutacion extends PermutationGenotype<Object> {
 		genotype = new PermutationGenotype<Integer>(arr);
 		genotype.init(new Random());
 		
+		
+	}
+	
+	
+	public static void imprimir() {
 		System.out.println("Permutación");
 
 		for(int i = 0; i < genotype.size(); i++) {
@@ -18,4 +23,6 @@ public class Permutacion extends PermutationGenotype<Object> {
 		}
 		System.out.println();
 	}
+	
+	
 }

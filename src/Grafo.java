@@ -80,18 +80,20 @@ public class Grafo {
 		}
 		
 
+		//combinar(etiquetas,etiquetas2);
+		imprimir(1);
+		imprimir(2);
 		combinar(etiquetas,etiquetas2);
-		/*imprimir();
-		mutar(etiquetas);
-		mutar(etiquetas2);
-		imprimir();*/
+		//mutar(etiquetas);
+		//mutar(etiquetas2);
+		//imprimir(1);imprimir(2);
 	}
 	
 	
 	public static void combinar(int[] etiquetas, int[] etiquetas2) {
 		//todo poner un for de 0 hasta la poblacions
 		//esto imprime para ver primero las dos entradas
-		imprimir();
+		//imprimir(1);
 		System.out.println();
 
 		//asignamos los hijos al tamaño
@@ -101,13 +103,13 @@ public class Grafo {
 		
 		//definir punto de corte 1
 		int corte1=etiquetas.length/2-1;
-		//System.out.println("Corte1:");
-		//System.out.println(corte1);
+		System.out.println("Corte1:");
+		System.out.println(corte1);
 		
 		//definir punto de corte 2
 		int corte2=etiquetas.length/2;
-		//System.out.println("Corte2:");
-		//System.out.println(corte2);
+		System.out.println("Corte2:");
+		System.out.println(corte2);
 
 		
 		//System.out.println("Primer for:");
@@ -154,34 +156,65 @@ public class Grafo {
 	
 
 	public static int[] mutar(int[] mutante) {
-		/*for (int i = 0; i < mutante.length; i++) {
-			System.out.print(mutante[i] + " ");
-		}*/	
+
 		Random random = new Random();
+		for (int i = 0; i < mutante.length/2; i++){
+			//System.out.println(1111);
+			int datotmp=random.nextInt(mutante.length);
+			int segundodato=random.nextInt(mutante.length);
+			if( 1!=mutante[datotmp] && 1!=mutante[segundodato]) {
+				//System.out.println("entro al if");
+				int tmp = mutante[datotmp];
+				mutante[datotmp] = mutante[segundodato];
+				mutante[segundodato] = tmp;
+				System.out.println();
+				System.out.println("En el if, ciclo :"+(i+1));
+				for (int j = 0; j < mutante.length;j++) {
+					System.out.print(mutante[j] + " ");
+					}
+
+			}else{
+				i--;
+				System.out.println();
+				System.out.println("Resta un ciclo");
+			}
+
+		}
+		System.out.println("Final:");
+		for (int j = 0; j < mutante.length;j++) {
+			System.out.print(mutante[j] + " ");
+		}
+		return mutante;
+		/*
 		int datotmp=random.nextInt(mutante.length);
 		int segundodato=random.nextInt(mutante.length);
-		
-		int tmp=mutante[datotmp];
-		mutante[datotmp]=mutante[segundodato];
-		mutante[segundodato]=tmp;
-		/*System.out.println();
-		for (int i = 0; i < mutante.length; i++) {
-			System.out.print(mutante[i] + " ");
-		}*/	
-		return mutante;
+
+		//if( 1!=mutante[datotmp] && 1!=mutante[segundodato]){
+			//System.out.println("entro al if");
+			int tmp=mutante[datotmp];
+			mutante[datotmp]=mutante[segundodato];
+			mutante[segundodato]=tmp;
+			return mutante;
+		//}*/
+		//return mutante;
 	}
 	
-	public static void imprimir() {
-		System.out.println();
-		System.out.println("Etiquetas");
-		for (int i = 0; i < n; i++) {
-			System.out.print(etiquetas[i] + " ");
+	public static void imprimir(int entrada) {
+		if(entrada==1){
+			System.out.println();
+			System.out.println("Etiquetas");
+			for (int i = 0; i < n; i++) {
+				System.out.print(etiquetas[i] + " ");
+			}
+		}else{
+			System.out.println();
+			System.out.println("Etiquetas2");
+			for (int i = 0; i < n; i++) {
+				System.out.print(etiquetas2[i] + " ");
+			}
 		}
-		System.out.println();
-		System.out.println("Etiquetas2");
-		for (int i = 0; i < n; i++) {
-			System.out.print(etiquetas2[i] + " ");
-		}
+
+
 	}
 	
 	

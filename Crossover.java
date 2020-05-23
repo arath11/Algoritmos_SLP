@@ -13,7 +13,6 @@ public class Crossover {
 
         //esto imprime para ver primero las dos entradas
         //imprimir(1);
-        System.out.println();
 
         //asignamos los hijos al tamaño
         hijo1=new ArrayList<Integer>();
@@ -22,13 +21,9 @@ public class Crossover {
 
         //definir punto de corte 1
         int corte1=etiquetas.size()/2-1;
-        System.out.println("Corte1:");
-        System.out.println(corte1);
 
         //definir punto de corte 2
         int corte2=etiquetas.size()/2;
-        System.out.println("Corte2:");
-        System.out.println(corte2);
 
         //System.out.println("Primer for:");
         //izquierda
@@ -184,16 +179,6 @@ public class Crossover {
                 }
             }
         }
-
-
-
-
-
-
-
-        System.out.println();
-        imprimirHijo(1);
-        imprimirHijo(2);
     }
 
     public static void imprimir(int entrada) {
@@ -229,7 +214,7 @@ public class Crossover {
 
         }
     }
-
+    /*
     public static void main(String[] args) {
         ArrayList<Integer> l1 = new ArrayList<Integer>();
         ArrayList<Integer> l2 = new ArrayList<Integer>();
@@ -239,14 +224,14 @@ public class Crossover {
 
         for(int i = 0; i < arr1.length; i++) {
             l1.add(arr1[i]);
-            System.out.print(l1.get(i) + " ");
+           // System.out.print(l1.get(i) + " ");
         }
-        System.out.println();
+       // System.out.println();
 
         for(int i = 0; i < arr2.length; i++) {
             l2.add(arr2[i]);
-            System.out.print(l2.get(i) + " ");
+           // System.out.print(l2.get(i) + " ");
         }
         combinar(l1,l2);
-    }
+    }*/
 }

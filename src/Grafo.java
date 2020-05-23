@@ -1,249 +1,181 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Grafo {
 	public static int n;
-	public static int[][] matriz;
-	public static int[] aristas, etiquetas, etiquetas2,hijo1, hijo2;
+	public static int[][] matrix;
+	public static int[] v;
+	public static ArrayList<Individuo> population;
+	public static int minDefinitivo, minTmp, cantIndividuos,cantPoblaciones;
+	public static ArrayList<ArrayList<Integer>> pob2 = new ArrayList<ArrayList<Integer>>();
 
-	
+	public static void poblacion(int maxArista, ArrayList<Integer> arre) {
+		population = new ArrayList<Individuo>();
+
+		int aux = 0;
+		for (int i = 0; i < cantIndividuos; i++) {
+			aux = 0;
+			Permutacion.Permutacion(arre);
+
+			ArrayList<Integer> listaAux = new ArrayList<Integer>();
+
+			for (int j = 0; j < n; j++) {
+				if (j == maxArista) {
+					listaAux.add(1);
+				}
+				if (j != maxArista) {
+
+					listaAux.add(Permutacion.genotype.get(aux));
+					aux++;
+				}
+				if (aux == Permutacion.genotype.size()) {
+					break;
+				}
+			}
+			population.add(new Individuo(busquedaLocal(listaAux, sumMinIndividuo(listaAux))));
+		}
+	}
+
+	public static ArrayList<Integer> mutar(ArrayList<Integer> mutante) {
+
+		Random random = new Random();
+		ArrayList<Integer> mutanteAuxiliar = (ArrayList<Integer>) mutante.clone();
+
+		for (int i = 0; i < mutanteAuxiliar.size() / 2; i++) {
+			int datotmp = random.nextInt(mutanteAuxiliar.size());
+			int segundodato = random.nextInt(mutanteAuxiliar.size());
+			if (1 != mutanteAuxiliar.get(datotmp) && 1 != mutanteAuxiliar.get(segundodato)) {
+				int tmp = mutanteAuxiliar.get(datotmp);
+				mutanteAuxiliar.set(datotmp, mutanteAuxiliar.get(segundodato));
+				mutanteAuxiliar.set(segundodato, tmp);
+			} else {
+				i--;
+			}
+		}
+
+		return mutanteAuxiliar;
+	}
+
+	public static int sumMinIndividuo(ArrayList<Integer> arrayList) {
+		int minAcum = 0, etiqueta1 = 0, etiqueta2 = 0;
+
+		// Operaciones
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[0].length; j++) {
+				if (matrix[i][j] == 1) {
+					etiqueta1 = arrayList.get(i);
+					etiqueta2 = arrayList.get(j);
+					matrix[j][i] = 0;
+					if (etiqueta1 < etiqueta2) {
+						minAcum += etiqueta1;
+					} else {
+						minAcum += etiqueta2;
+					}
+				}
+			}
+		}
+		return minAcum;
+	}
+
+	public static Individuo busquedaLocal(ArrayList<Integer> arrayList, int minimo) {
+		ArrayList<Integer> arrayMejorado = new ArrayList<Integer>();
+		arrayMejorado = mutar(arrayList);
+		int minAux = sumMinIndividuo(arrayMejorado);
+
+		if (minAux < minimo) {
+			return new Individuo(minAux, arrayMejorado);
+		}
+		return new Individuo(minimo, arrayList);
+	}
+
+	public static void cruza() {
+		ArrayList<Individuo> pob;
+		pob = (ArrayList<Individuo>) population.clone();
+
+		pob2.clear();
+		Collections.sort(pob);
+		minTmp = pob.get(0).minimo;
+		for (int i = 0; i < pob.size() - 1; i += 2) {
+			Crossover.combinar(pob.get(i).list, pob.get(i + 1).list);
+			pob2.add(Crossover.hijo1);
+			pob2.add(Crossover.hijo2);
+		}
+	}
+
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
 		n = sc.nextInt();
-		matriz = new int[n][n];
-		aristas = new int[n];
-		etiquetas = new int[n];
-		etiquetas2 = new int[n];
+		matrix = new int[n][n];
+		v = new int[n];
 
-		Integer maxArista = 0, 
-				maxAristaAcum = 0;
-				//maxAristaAnterior = 0, 
-				//maxAristaAnteriorAcum = 0;
+		Integer maxArista = 0, maxAristaAcum = 0;
 
-		//rellenar 
-		for (int i = 0; i < matriz.length; i++) {
-			for (int j = 0; j < matriz[0].length; j++) {
-				matriz[i][j] = sc.nextInt();
-				if (matriz[i][j] == 1) {
-					aristas[i]++;
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[0].length; j++) {
+				matrix[i][j] = sc.nextInt();
+				if (matrix[i][j] == 1) {
+					v[i]++;
 				}
 			}
-
-			if (aristas[i] > maxAristaAcum) {
+			if (v[i] > maxAristaAcum) {
 				maxArista = i;
-				maxAristaAcum = aristas[i];
-			} 
+				maxAristaAcum = v[i];
+			}
 		}
-		
-		etiquetas[maxArista] = 1;
-		etiquetas2[maxArista] = 1;
-		
-		//etiquetas[maxAristaAnterior] = 2;
 
-		//llena los arrays para la permutacion 
 		ArrayList<Integer> arre = new ArrayList<Integer>();
-		for (int i = 2; i <= n;  i++) {
+		for (int i = 2; i <= n; i++) {
 			arre.add(i);
 		}
-		
-		//padre1
-		Permutacion permutacion = new Permutacion(arre);
-		
-		
-		int aux = 0;
-		for (int i = 0; i < n; i++) {
-			if (etiquetas[i] != 1) {
-				etiquetas[i] = Permutacion.genotype.get(aux);
-				aux++;
-			}
-			if (aux == Permutacion.genotype.size()) {
-				break;
-			}
-		}
-		
-		//padre2
-		Permutacion permutacion2 = new Permutacion(arre);
-		
-		etiquetas2[maxArista] = 1;
-		
-		int aux2 = 0;
-		for (int i = 0; i < n; i++) {
-			if (etiquetas2[i] != 1) {
-				etiquetas2[i] = Permutacion.genotype.get(aux2);
-				aux2++;
-			}
-			if (aux2 == Permutacion.genotype.size()) {
-				break;
-			}
-		}
-		
 
-		//combinar(etiquetas,etiquetas2);
-		imprimir(1);
-		imprimir(2);
-		combinar(etiquetas,etiquetas2);
-		//mutar(etiquetas);
-		//mutar(etiquetas2);
-		//imprimir(1);imprimir(2);
+		cantPoblaciones = 25;
+
+		//Tiene que ser par
+		cantIndividuos = 10;
+
+		poblacion(maxArista, arre);
+
+		cruza();
+		minDefinitivo = minTmp;
+		for (int i = 0; i <= cantPoblaciones; i++) {
+			for (int j = 0; j < cantIndividuos; j++) {
+				population.add(new Individuo(busquedaLocal(pob2.get(j), sumMinIndividuo(pob2.get(j)))));
+			}
+			if (minTmp < minDefinitivo) {
+				minDefinitivo = minTmp;
+			}
+			cruza();
+		}
+		System.out.println("El minimo final es: " + minDefinitivo);
 	}
-	
-	
-	public static void combinar(int[] etiquetas, int[] etiquetas2) {
-		//todo poner un for de 0 hasta la poblacions
-		//esto imprime para ver primero las dos entradas
-		//imprimir(1);
-		System.out.println();
-
-		//asignamos los hijos al tamaño
-		hijo1=new int[etiquetas.length];
-		hijo2=new int[etiquetas.length];
- 
-		
-		//definir punto de corte 1
-		int corte1=etiquetas.length/2-1;
-		System.out.println("Corte1:");
-		System.out.println(corte1);
-		
-		//definir punto de corte 2
-		int corte2=etiquetas.length/2;
-		System.out.println("Corte2:");
-		System.out.println(corte2);
-
-		
-		//System.out.println("Primer for:");
-		//izquierda
-		for(int i = 0; i < corte1; i++) {
-		hijo1[i]=etiquetas[i];
-		}
-
-		//centro
-		for(int i = corte1; i < corte2+1; i++) {
-			hijo1[i]=etiquetas2[i];
-		}
-		
-		//System.out.println("Segundo for:");
-		//derecha
-		for(int i = corte2+1; i < etiquetas.length; i++) {
-			hijo1[i]=etiquetas[i];
-		}
-
-
-		//imprimir();
-		imprimirHijo(1);
-
-		
-		//izqueirda
-		//System.out.println("Primer for:");
-		for(int i = 0; i < corte1; i++) {
-		hijo2[i]=etiquetas2[i];
-		}
-
-		//centro
-		for(int i = corte1; i < corte2+1; i++) {
-			hijo2[i]=etiquetas[i];
-		}
-		
-		//derecha
-		//System.out.println("Segundo for:");
-		for(int i = corte2+1; i < etiquetas.length; i++) {
-			hijo2[i]=etiquetas2[i];
-		}
-		imprimirHijo(2);	
-	}
-	
-	
-
-	public static int[] mutar(int[] mutante) {
-
-		Random random = new Random();
-		for (int i = 0; i < mutante.length/2; i++){
-			//System.out.println(1111);
-			int datotmp=random.nextInt(mutante.length);
-			int segundodato=random.nextInt(mutante.length);
-			if( 1!=mutante[datotmp] && 1!=mutante[segundodato]) {
-				//System.out.println("entro al if");
-				int tmp = mutante[datotmp];
-				mutante[datotmp] = mutante[segundodato];
-				mutante[segundodato] = tmp;
-				System.out.println();
-				System.out.println("En el if, ciclo :"+(i+1));
-				for (int j = 0; j < mutante.length;j++) {
-					System.out.print(mutante[j] + " ");
-					}
-
-			}else{
-				i--;
-				System.out.println();
-				System.out.println("Resta un ciclo");
-			}
-
-		}
-		System.out.println("Final:");
-		for (int j = 0; j < mutante.length;j++) {
-			System.out.print(mutante[j] + " ");
-		}
-		return mutante;
-		/*
-		int datotmp=random.nextInt(mutante.length);
-		int segundodato=random.nextInt(mutante.length);
-
-		//if( 1!=mutante[datotmp] && 1!=mutante[segundodato]){
-			//System.out.println("entro al if");
-			int tmp=mutante[datotmp];
-			mutante[datotmp]=mutante[segundodato];
-			mutante[segundodato]=tmp;
-			return mutante;
-		//}*/
-		//return mutante;
-	}
-	
-	public static void imprimir(int entrada) {
-		if(entrada==1){
-			System.out.println();
-			System.out.println("Etiquetas");
-			for (int i = 0; i < n; i++) {
-				System.out.print(etiquetas[i] + " ");
-			}
-		}else{
-			System.out.println();
-			System.out.println("Etiquetas2");
-			for (int i = 0; i < n; i++) {
-				System.out.print(etiquetas2[i] + " ");
-			}
-		}
-
-
-	}
-	
-	
-	public static void imprimirHijo(int hijo) {
-		if(hijo==1) {
-			System.out.println("Hijo1");
-			for (int i = 0; i < hijo1.length; i++) {
-				System.out.print(hijo1[i] + " ");
-			}
-			System.out.println();	
-		}else if( hijo ==2) {
-			System.out.println("Hijo2");
-			for (int i = 0; i < hijo2.length; i++) {
-				System.out.print(hijo2[i] + " ");
-			}	
-
-		}else{
-		
-		}
-	}
-	
-	
 }
 
+class Individuo implements Comparable<Individuo> {
+	public int minimo;
+	public ArrayList<Integer> list;
 
-//prueba usada
-/*
-	4
-	0 1 1 0
-	1 0 1 0
-	1 1 0 0
-	0 1 0 0*/
+	public Individuo(Individuo ind) {
+		this.minimo = ind.minimo;
+		this.list = ind.list;
+	}
+
+	public Individuo(int minimo, ArrayList<Integer> list) {
+		this.minimo = minimo;
+		this.list = list;
+	}
+
+	@Override
+	public int compareTo(Individuo ind) {
+		if (minimo < ind.minimo) {
+			return -1;
+		}
+		if (minimo > ind.minimo) {
+			return 1;
+		}
+		return 0;
+	}
+
+}

@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 public class Crossover {
     public static ArrayList<Integer> stick = new ArrayList<Integer>(),
-            stick2 = new ArrayList<Integer>(),
-            hijo1,
-            hijo2;
+            						 stick2 = new ArrayList<Integer>(),
+            						 hijo1,
+            						 hijo2;
 
 
     public static void combinar(ArrayList<Integer> etiquetas, ArrayList<Integer> etiquetas2) {
@@ -14,49 +14,49 @@ public class Crossover {
         //esto imprime para ver primero las dos entradas
         //imprimir(1);
 
-        //asignamos los hijos al tamaÃ±o
+        //asignamos los hijos al tamaño
         hijo1=new ArrayList<Integer>();
         hijo2=new ArrayList<Integer>();
 
 
         //definir punto de corte 1
-        int corte1=etiquetas.size()/2-1;
+        Integer corte1=etiquetas.size()/2-1;
 
         //definir punto de corte 2
-        int corte2=etiquetas.size()/2;
+        Integer corte2=etiquetas.size()/2;
 
         //System.out.println("Primer for:");
         //izquierda
-        for(int i = 0; i < corte1; i++) {
+        for(Integer i = 0; i < corte1; i++) {
             hijo1.add(etiquetas.get(i));
         }
 
         //centro
-        for(int i = corte1; i < corte2+1; i++) {
+        for(Integer i = corte1; i < corte2+1; i++) {
             hijo1.add(etiquetas2.get(i));
         }
 
         //System.out.println("Segundo for:");
         //derecha
-        for(int i = corte2+1; i < etiquetas.size(); i++) {
+        for(Integer i = corte2+1; i < etiquetas.size(); i++) {
             hijo1.add(etiquetas.get(i));
         }
 
 
         //izqueirda
         //System.out.println("Primer for:");
-        for(int i = 0; i < corte1; i++) {
+        for(Integer i = 0; i < corte1; i++) {
             hijo2.add(etiquetas2.get(i));
         }
 
         //centro
-        for(int i = corte1; i < corte2+1; i++) {
+        for(Integer i = corte1; i < corte2+1; i++) {
             hijo2.add(etiquetas.get(i));
         }
 
         //derecha
         //System.out.println("Segundo for:");
-        for(int i = corte2+1; i < etiquetas.size(); i++) {
+        for(Integer i = corte2+1; i < etiquetas.size(); i++) {
             hijo2.add(etiquetas2.get(i));
         }
 
@@ -75,7 +75,7 @@ public class Crossover {
 
             if(hijo1.get(corte1)==hijo2.get(corte2)){
                 //hijo 1 parte izquierda
-                for(int i = 0; i < corte1; i++) {
+                for(Integer i = 0; i < corte1; i++) {
                     if(hijo1.get(i) == hijo1.get(corte2)){
                         hijo1.set(i, hijo2.get(corte1));
                     } else if(hijo1.get(i) == hijo1.get(corte2)){
@@ -83,7 +83,7 @@ public class Crossover {
                     }
                 }
                 //hijo 1 parte derecha
-                for(int i = corte2+1; i < etiquetas.size(); i++) {
+                for(Integer i = corte2+1; i < etiquetas.size(); i++) {
                     if(hijo1.get(i) == hijo1.get(corte2)){
                         hijo1.set(i, hijo2.get(corte1));
                     } else if(hijo1.get(i) == hijo1.get(corte2)){
@@ -92,7 +92,7 @@ public class Crossover {
                 }
 
                 //hijo 2 parte izquierda
-                for(int i = 0; i < corte1; i++) {
+                for(Integer i = 0; i < corte1; i++) {
                     if(hijo2.get(i) == hijo2.get(corte1)){
                         hijo2.set(i, hijo1.get(corte2));
                     } else if(hijo2.get(i) == hijo2.get(corte1)){
@@ -100,7 +100,7 @@ public class Crossover {
                     }
                 }
                 //hijo 2 parte derecha
-                for(int i = corte2+1; i < etiquetas.size(); i++) {
+                for(Integer i = corte2+1; i < etiquetas.size(); i++) {
                     if(hijo2.get(i) == hijo2.get(corte1)){
                         hijo2.set(i, hijo1.get(corte2));
                     } else if(hijo2.get(i) == hijo2.get(corte1)){
@@ -110,7 +110,7 @@ public class Crossover {
 
             }else if (hijo1.get(corte2)==hijo2.get(corte1)) {
                 //hijo 1 parte izquierda
-                for (int i = 0; i < corte1; i++) {
+                for (Integer i = 0; i < corte1; i++) {
                     if (hijo1.get(i) == hijo1.get(corte1)) {
                         hijo1.set(i, hijo2.get(corte2));
                     } else if (hijo1.get(i) == hijo1.get(corte1)) {
@@ -118,7 +118,7 @@ public class Crossover {
                     }
                 }
                 //hijo 1 parte derecha
-                for (int i = corte2 + 1; i < etiquetas.size(); i++) {
+                for (Integer i = corte2 + 1; i < etiquetas.size(); i++) {
                     if (hijo1.get(i) == hijo1.get(corte1)) {
                         hijo1.set(i, hijo2.get(corte2));
                     } else if (hijo1.get(i) == hijo1.get(corte1)) {
@@ -127,7 +127,7 @@ public class Crossover {
                 }
 
                 //hijo 2 parte izquierda
-                for (int i = 0; i < corte1; i++) {
+                for (Integer i = 0; i < corte1; i++) {
                     if (hijo2.get(i) == hijo2.get(corte2)) {
                         hijo2.set(i, hijo1.get(corte1));
                     } else if (hijo2.get(i) == hijo2.get(corte2)) {
@@ -135,7 +135,7 @@ public class Crossover {
                     }
                 }
                 //hijo 2 parte derecha
-                for (int i = corte2 + 1; i < etiquetas.size(); i++) {
+                for (Integer i = corte2 + 1; i < etiquetas.size(); i++) {
                     if (hijo2.get(i) == hijo2.get(corte2)) {
                         hijo2.set(i, hijo1.get(corte1));
                     } else if (hijo2.get(i) == hijo2.get(corte2)) {
@@ -146,7 +146,7 @@ public class Crossover {
         }//caso base, ninguno es igu
         else if(hijo1.get(corte1)!=hijo2.get(corte2) || hijo1.get(corte2)!=hijo2.get(corte1)){
             //hijo 1 parte izquierda
-            for(int i = 0; i < corte1; i++) {
+            for(Integer i = 0; i < corte1; i++) {
                 if(hijo1.get(i) == hijo1.get(corte1)){
                     hijo1.set(i, hijo2.get(corte1));
                 } else if(hijo1.get(i) == hijo1.get(corte2)){
@@ -154,7 +154,7 @@ public class Crossover {
                 }
             }
             //hijo 1 parte derecha
-            for(int i = corte2+1; i < etiquetas.size(); i++) {
+            for(Integer i = corte2+1; i < etiquetas.size(); i++) {
                 if(hijo1.get(i) == hijo1.get(corte1)){
                     hijo1.set(i, hijo2.get(corte1));
                 } else if(hijo1.get(i) == hijo1.get(corte2)){
@@ -163,7 +163,7 @@ public class Crossover {
             }
 
             //hijo 2 parte izquierda
-            for(int i = 0; i < corte1; i++) {
+            for(Integer i = 0; i < corte1; i++) {
                 if(hijo2.get(i) == hijo2.get(corte1)){
                     hijo2.set(i, hijo1.get(corte1));
                 } else if(hijo2.get(i) == hijo2.get(corte2)){
@@ -171,7 +171,7 @@ public class Crossover {
                 }
             }
             //hijo 2 parte derecha
-            for(int i = corte2+1; i < etiquetas.size(); i++) {
+            for(Integer i = corte2+1; i < etiquetas.size(); i++) {
                 if(hijo2.get(i) == hijo2.get(corte1)){
                     hijo2.set(i, hijo1.get(corte1));
                 } else if(hijo2.get(i) == hijo2.get(corte2)){
@@ -181,7 +181,7 @@ public class Crossover {
         }
     }
 
-    public static void imprimir(int entrada) {
+   public static void imprimir(int entrada) {
         if(entrada==1){
             System.out.println();
             System.out.println("Etiquetas");

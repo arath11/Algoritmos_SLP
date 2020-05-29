@@ -6,11 +6,10 @@ import java.util.Scanner;
 public class Grafo {
 	public static int n, cont = 1, contador = 0;
 	public static ArrayList<Integer> array1 = new ArrayList<Integer>(),
-			array2 = new ArrayList<Integer>(),
-			array3 = new ArrayList<Integer>(),
-			v = new ArrayList<Integer>();
+									 array2 = new ArrayList<Integer>(),
+									 v = new ArrayList<Integer>();
 	public static ArrayList<Individuo> population = new ArrayList<Individuo>(),
-			population2 = new ArrayList<Individuo>();
+			                           population2 = new ArrayList<Individuo>();
 	public static Integer minDefinitivo, minTmp, cantIndividuos, cantPoblaciones;
 	public static ArrayList<ArrayList<Integer>> pob2 = new ArrayList<ArrayList<Integer>>();
 
@@ -38,20 +37,18 @@ public class Grafo {
 
 	public static Integer sumMinIndividuo(ArrayList<Integer> arrayList) {
 		// Operaciones
-		Integer minAcum = 0, etiqueta1 = 0, etiqueta2 = 0;
+		Integer minAcum = 0;
+		
 		for (int i = 0; i < array1.size(); i++) {
-			etiqueta1 = arrayList.get(array1.get(i));
-			etiqueta2 = arrayList.get(array2.get(i));
-
-			if (etiqueta1 < etiqueta2) {
-				minAcum += etiqueta1;
+			if (arrayList.get(array1.get(i)) < arrayList.get(array2.get(i))) {
+				minAcum += arrayList.get(array1.get(i));
 			} else {
-				minAcum += etiqueta2;
+				minAcum += arrayList.get(array2.get(i));
 			}
 		}
 
 		return (minAcum);
-
+	
 	}
 
 	public static Individuo busquedaLocal(ArrayList<Integer> arrayList, Integer minimo) {
@@ -68,18 +65,18 @@ public class Grafo {
 	public static void cruza() {
 		ArrayList<Individuo> pob;
 		pob = (ArrayList<Individuo>) population.clone();
-
-
+		
+		
 		pob2.clear();
 		population2 = (ArrayList<Individuo>) population.clone();
 		population.clear();
-
+		
 		//System.out.println(population2.get(0).minimo);
-
+		
 		Collections.sort(pob);
 		minTmp = pob.get(0).minimo;
-		//System.out.println(minTmp + " " + cont++);
-
+		System.out.println(minTmp + " " + cont++);
+		
 		for (Integer i = 1; i <= (pob.size()/2); i++) {
 			Crossover.combinar(pob.get(0).list, pob.get(i).list);
 			pob2.add(Crossover.hijo1);
@@ -104,19 +101,13 @@ public class Grafo {
 				System.out.println("Ingreso los datos incorrectamente");
 				return;
 			}
-			a3 = sc.nextInt();
-			if(a3 == -1) {
-				System.out.println("Ingreso los datos incorrectamente");
-				return;
-			}
 			array1.add(a1);
 			array2.add(a2);
-			array3.add(a3);
-		}
+	    }
+	
+		quitarRepetidos(array1,array2);
 
-		quitarRepetidos(array1,array2,array3);
-
-
+			
 		// Rellenar
 		//ArrayList<Integer> arre = new ArrayList<Integer>();
 		for (Integer i = 1; i <= n; i++) {
@@ -127,7 +118,7 @@ public class Grafo {
 
 		// Tiene que ser par
 		cantIndividuos = 50;
-
+		
 		boolean tronar=true;
 
 		poblacion(v);
@@ -135,29 +126,29 @@ public class Grafo {
 		cruza();
 		minDefinitivo = minTmp;
 		while(tronar) {
-
+			
 			for (Integer i = 0; i < cantIndividuos; i++) {
 				population.add(new Individuo(busquedaLocal(pob2.get(i), sumMinIndividuo(pob2.get(i)))));
 				population.add(population2.get(i));
 			}
-
-
+			
+			
 			Collections.sort(population);
-
+			
 			int k=population.size()/2;
 			int f =population.size()/2;
 			while(k!=0) {
 				population.remove(f);
 				k--;
 			}
-
-
+			
+			
 			if (minTmp < minDefinitivo) {
 				minDefinitivo = minTmp;
 				contador = 0;
 			} else {
 				contador++;
-				if(contador == 150) {
+				if(contador == 10000){
 					System.out.println("El minimo final es: " + minDefinitivo);
 					System.out.print("El etiquetado final es: ");
 					for(int x = 0; x < population.get(0).list.size();x++) {
@@ -167,19 +158,18 @@ public class Grafo {
 					break;
 				}
 			}
-
+			
 			cruza();
 		}
-
+		
 	}
-
-	public static void quitarRepetidos(ArrayList<Integer> array1, ArrayList<Integer> array2, ArrayList<Integer> array3) {
+	
+	public static void quitarRepetidos(ArrayList<Integer> array1, ArrayList<Integer> array2) {
 		for (int i = 0; i < array1.size(); i++) {
 			for(int j = 0; j < array2.size();j++) {
 				if(array1.get(i) == array2.get(j) && array2.get(i) == array1.get(j)) {
 					array1.remove(j);
 					array2.remove(j);
-					array3.remove(j);
 				}
 			}
 		}
@@ -213,4 +203,3 @@ class Individuo implements Comparable<Individuo> {
 	}
 
 }
-

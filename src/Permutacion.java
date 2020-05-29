@@ -1,13 +1,14 @@
 import java.util.ArrayList;
 import java.util.Random;
+
 import org.opt4j.core.genotype.PermutationGenotype;
 
 public class Permutacion extends PermutationGenotype<Object> {
 	
 	public static PermutationGenotype<Integer> genotype;
 	
-	public static void Permutacion(ArrayList<Integer> arr) {
-		genotype = new PermutationGenotype<Integer>(arr);
+	public static void Permutacion(ArrayList<Integer> v) {
+		genotype = new PermutationGenotype<Integer>(v);
 		genotype.init(new Random());
 	}
 	

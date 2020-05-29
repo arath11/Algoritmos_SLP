@@ -8,18 +8,18 @@ import org.opt4j.operators.crossover.Pair;
 
 public class Crossover {
     public static ArrayList<Integer> stick = new ArrayList<Integer>(),
-            stick2 = new ArrayList<Integer>(),
-            hijo1,
-            hijo2;
+            						 stick2 = new ArrayList<Integer>(),
+            						 hijo1,
+            						 hijo2;
 
-
+    
     public static void combinar(ArrayList<Integer> a1, ArrayList<Integer> a2) {
-        Random random = new Random();
+    	Random random = new Random();
+    	
+    	PermutationGenotype<Integer> p1 = new PermutationGenotype<Integer>(a1);
+    	PermutationGenotype<Integer> p2 = new PermutationGenotype<Integer>(a2);
 
-        PermutationGenotype<Integer> p1 = new PermutationGenotype<Integer>(a1);
-        PermutationGenotype<Integer> p2 = new PermutationGenotype<Integer>(a2);
-
-        PermutationGenotype<Object> o1 = p1.newInstance();
+    	PermutationGenotype<Object> o1 = p1.newInstance();
         PermutationGenotype<Object> o2 = p2.newInstance();
 
         int size = p1.size();
@@ -30,24 +30,24 @@ public class Crossover {
         int j = 0;
 
         while (o1.size() != size || o2.size() != size) {
-            if (j == size || (random.nextBoolean() && i < size)) {
-                Object e = p1.get(i);
-                i++;
-                if (elements.add(e)) {
-                    o1.add(e);
+                if (j == size || (random.nextBoolean() && i < size)) {
+                        Object e = p1.get(i);
+                        i++;
+                        if (elements.add(e)) {
+                                o1.add(e);
+                        } else {
+                                o2.add(e);
+                        }
                 } else {
-                    o2.add(e);
-                }
-            } else {
-                Object e = p2.get(j);
-                j++;
+                        Object e = p2.get(j);
+                        j++;
 
-                if (elements.add(e)) {
-                    o1.add(e);
-                } else {
-                    o2.add(e);
+                        if (elements.add(e)) {
+                                o1.add(e);
+                        } else {
+                               o2.add(e);
+                        }
                 }
-            }
         }
 
         Pair<PermutationGenotype<?>> offspring = new Pair<PermutationGenotype<?>>(o1, o2);
@@ -55,7 +55,7 @@ public class Crossover {
         hijo2 = (ArrayList<Integer>) offspring.getSecond();
     }
 
-    public static void imprimir(int entrada) {
+   public static void imprimir(int entrada) {
         if(entrada==1){
             System.out.println();
             System.out.println("Etiquetas");

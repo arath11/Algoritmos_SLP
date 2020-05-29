@@ -2,7 +2,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Prueba {
-	public static byte[] v = {9,8,3,5,6,1,2,10,4,7 };
+	public static byte[] v = {1,2,3,4,5,6,7,8,9,10};
 	public static ArrayList<Integer> array1 = new ArrayList<Integer>(),
 									 array2 = new ArrayList<Integer>(),
 									 array3 = new ArrayList<Integer>();
@@ -25,7 +25,7 @@ public class Prueba {
 		//Triplet(matrix);
 		
 		//TripletArr(matrix);
-		TripletArr(matrix);
+		//TripletArr(matrix);
 
 		//solveMatrixMin(matrix);
 		

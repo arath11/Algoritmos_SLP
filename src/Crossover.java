@@ -1,187 +1,61 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
-import java.util.Scanner;
+import java.util.Set;
+
+import org.opt4j.core.genotype.PermutationGenotype;
+import org.opt4j.operators.crossover.Pair;
 
 public class Crossover {
     public static ArrayList<Integer> stick = new ArrayList<Integer>(),
-            						 stick2 = new ArrayList<Integer>(),
-            						 hijo1,
-            						 hijo2;
+            stick2 = new ArrayList<Integer>(),
+            hijo1,
+            hijo2;
 
 
-    public static void combinar(ArrayList<Integer> etiquetas, ArrayList<Integer> etiquetas2) {
+    public static void combinar(ArrayList<Integer> a1, ArrayList<Integer> a2) {
+        Random random = new Random();
 
-        //esto imprime para ver primero las dos entradas
-        //imprimir(1);
+        PermutationGenotype<Integer> p1 = new PermutationGenotype<Integer>(a1);
+        PermutationGenotype<Integer> p2 = new PermutationGenotype<Integer>(a2);
 
-        //asignamos los hijos al tamaño
-        hijo1=new ArrayList<Integer>();
-        hijo2=new ArrayList<Integer>();
+        PermutationGenotype<Object> o1 = p1.newInstance();
+        PermutationGenotype<Object> o2 = p2.newInstance();
 
+        int size = p1.size();
 
-        //definir punto de corte 1
-        Integer corte1=etiquetas.size()/2-1;
+        Set<Object> elements = new HashSet<Object>();
 
-        //definir punto de corte 2
-        Integer corte2=etiquetas.size()/2;
+        int i = 0;
+        int j = 0;
 
-        //System.out.println("Primer for:");
-        //izquierda
-        for(Integer i = 0; i < corte1; i++) {
-            hijo1.add(etiquetas.get(i));
-        }
-
-        //centro
-        for(Integer i = corte1; i < corte2+1; i++) {
-            hijo1.add(etiquetas2.get(i));
-        }
-
-        //System.out.println("Segundo for:");
-        //derecha
-        for(Integer i = corte2+1; i < etiquetas.size(); i++) {
-            hijo1.add(etiquetas.get(i));
-        }
-
-
-        //izqueirda
-        //System.out.println("Primer for:");
-        for(Integer i = 0; i < corte1; i++) {
-            hijo2.add(etiquetas2.get(i));
-        }
-
-        //centro
-        for(Integer i = corte1; i < corte2+1; i++) {
-            hijo2.add(etiquetas.get(i));
-        }
-
-        //derecha
-        //System.out.println("Segundo for:");
-        for(Integer i = corte2+1; i < etiquetas.size(); i++) {
-            hijo2.add(etiquetas2.get(i));
-        }
-
-
-
-        //caso 1, todos son iguales y no se hace nada
-        if(hijo1.get(corte1)==hijo2.get(corte2) && hijo1.get(corte2)==hijo2.get(corte1)) {
-
-            //caso 2, dos son iguales
-        }
-        else if(hijo1.get(corte1)==hijo2.get(corte1) && hijo1.get(corte2)==hijo2.get(corte2)) {
-
-            //caso 2, dos son iguales
-        }
-        else if(hijo1.get(corte1)==hijo2.get(corte2) || hijo1.get(corte2)==hijo2.get(corte1)){
-
-            if(hijo1.get(corte1)==hijo2.get(corte2)){
-                //hijo 1 parte izquierda
-                for(Integer i = 0; i < corte1; i++) {
-                    if(hijo1.get(i) == hijo1.get(corte2)){
-                        hijo1.set(i, hijo2.get(corte1));
-                    } else if(hijo1.get(i) == hijo1.get(corte2)){
-                        hijo1.set(i, hijo2.get(corte1));
-                    }
+        while (o1.size() != size || o2.size() != size) {
+            if (j == size || (random.nextBoolean() && i < size)) {
+                Object e = p1.get(i);
+                i++;
+                if (elements.add(e)) {
+                    o1.add(e);
+                } else {
+                    o2.add(e);
                 }
-                //hijo 1 parte derecha
-                for(Integer i = corte2+1; i < etiquetas.size(); i++) {
-                    if(hijo1.get(i) == hijo1.get(corte2)){
-                        hijo1.set(i, hijo2.get(corte1));
-                    } else if(hijo1.get(i) == hijo1.get(corte2)){
-                        hijo1.set(i, hijo2.get(corte1));
-                    }
-                }
+            } else {
+                Object e = p2.get(j);
+                j++;
 
-                //hijo 2 parte izquierda
-                for(Integer i = 0; i < corte1; i++) {
-                    if(hijo2.get(i) == hijo2.get(corte1)){
-                        hijo2.set(i, hijo1.get(corte2));
-                    } else if(hijo2.get(i) == hijo2.get(corte1)){
-                        hijo2.set(i, hijo1.get(corte2));
-                    }
-                }
-                //hijo 2 parte derecha
-                for(Integer i = corte2+1; i < etiquetas.size(); i++) {
-                    if(hijo2.get(i) == hijo2.get(corte1)){
-                        hijo2.set(i, hijo1.get(corte2));
-                    } else if(hijo2.get(i) == hijo2.get(corte1)){
-                        hijo2.set(i, hijo1.get(corte2));
-                    }
-                }
-
-            }else if (hijo1.get(corte2)==hijo2.get(corte1)) {
-                //hijo 1 parte izquierda
-                for (Integer i = 0; i < corte1; i++) {
-                    if (hijo1.get(i) == hijo1.get(corte1)) {
-                        hijo1.set(i, hijo2.get(corte2));
-                    } else if (hijo1.get(i) == hijo1.get(corte1)) {
-                        hijo1.set(i, hijo2.get(corte2));
-                    }
-                }
-                //hijo 1 parte derecha
-                for (Integer i = corte2 + 1; i < etiquetas.size(); i++) {
-                    if (hijo1.get(i) == hijo1.get(corte1)) {
-                        hijo1.set(i, hijo2.get(corte2));
-                    } else if (hijo1.get(i) == hijo1.get(corte1)) {
-                        hijo1.set(i, hijo2.get(corte2));
-                    }
-                }
-
-                //hijo 2 parte izquierda
-                for (Integer i = 0; i < corte1; i++) {
-                    if (hijo2.get(i) == hijo2.get(corte2)) {
-                        hijo2.set(i, hijo1.get(corte1));
-                    } else if (hijo2.get(i) == hijo2.get(corte2)) {
-                        hijo2.set(i, hijo1.get(corte1));
-                    }
-                }
-                //hijo 2 parte derecha
-                for (Integer i = corte2 + 1; i < etiquetas.size(); i++) {
-                    if (hijo2.get(i) == hijo2.get(corte2)) {
-                        hijo2.set(i, hijo1.get(corte1));
-                    } else if (hijo2.get(i) == hijo2.get(corte2)) {
-                        hijo2.set(i, hijo1.get(corte1));
-                    }
-                }
-            }
-        }//caso base, ninguno es igu
-        else if(hijo1.get(corte1)!=hijo2.get(corte2) || hijo1.get(corte2)!=hijo2.get(corte1)){
-            //hijo 1 parte izquierda
-            for(Integer i = 0; i < corte1; i++) {
-                if(hijo1.get(i) == hijo1.get(corte1)){
-                    hijo1.set(i, hijo2.get(corte1));
-                } else if(hijo1.get(i) == hijo1.get(corte2)){
-                    hijo1.set(i, hijo2.get(corte2));
-                }
-            }
-            //hijo 1 parte derecha
-            for(Integer i = corte2+1; i < etiquetas.size(); i++) {
-                if(hijo1.get(i) == hijo1.get(corte1)){
-                    hijo1.set(i, hijo2.get(corte1));
-                } else if(hijo1.get(i) == hijo1.get(corte2)){
-                    hijo1.set(i, hijo2.get(corte2));
-                }
-            }
-
-            //hijo 2 parte izquierda
-            for(Integer i = 0; i < corte1; i++) {
-                if(hijo2.get(i) == hijo2.get(corte1)){
-                    hijo2.set(i, hijo1.get(corte1));
-                } else if(hijo2.get(i) == hijo2.get(corte2)){
-                    hijo2.set(i, hijo1.get(corte2));
-                }
-            }
-            //hijo 2 parte derecha
-            for(Integer i = corte2+1; i < etiquetas.size(); i++) {
-                if(hijo2.get(i) == hijo2.get(corte1)){
-                    hijo2.set(i, hijo1.get(corte1));
-                } else if(hijo2.get(i) == hijo2.get(corte2)){
-                    hijo2.set(i, hijo1.get(corte2));
+                if (elements.add(e)) {
+                    o1.add(e);
+                } else {
+                    o2.add(e);
                 }
             }
         }
+
+        Pair<PermutationGenotype<?>> offspring = new Pair<PermutationGenotype<?>>(o1, o2);
+        hijo1 = (ArrayList<Integer>) offspring.getFirst();
+        hijo2 = (ArrayList<Integer>) offspring.getSecond();
     }
 
-   public static void imprimir(int entrada) {
+    public static void imprimir(int entrada) {
         if(entrada==1){
             System.out.println();
             System.out.println("Etiquetas");
@@ -196,42 +70,4 @@ public class Crossover {
             }
         }
     }
-
-    public static void imprimirHijo(int hijo) {
-        if(hijo==1) {
-            System.out.println("Hijo1");
-            for (int i = 0; i < hijo1.size(); i++) {
-                System.out.print(hijo1.get(i) + " ");
-            }
-            System.out.println();
-        }else if( hijo ==2) {
-            System.out.println("Hijo2");
-            for (int i = 0; i < hijo2.size(); i++) {
-                System.out.print(hijo2.get(i) + " ");
-            }
-
-        }else{
-
-        }
-    }
-    /*
-    public static void main(String[] args) {
-        ArrayList<Integer> l1 = new ArrayList<Integer>();
-        ArrayList<Integer> l2 = new ArrayList<Integer>();
-
-        int[] arr1 = {1,6 ,4, 3,10 ,2 ,9 ,8 ,7, 5},
-                arr2 = {1 ,10,4, 3, 8, 2, 5, 9, 7, 6};
-
-        for(int i = 0; i < arr1.length; i++) {
-            l1.add(arr1[i]);
-           // System.out.print(l1.get(i) + " ");
-        }
-       // System.out.println();
-
-        for(int i = 0; i < arr2.length; i++) {
-            l2.add(arr2[i]);
-           // System.out.print(l2.get(i) + " ");
-        }
-        combinar(l1,l2);
-    }*/
 }

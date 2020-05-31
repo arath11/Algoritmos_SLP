@@ -144,7 +144,7 @@ public class GeneradorMatriz {
 	}
 
 	public static void main(String[] args) {
-		GeneradorMatriz mx = new GeneradorMatriz(25);
+		GeneradorMatriz mx = new GeneradorMatriz(144);
 		// mx.printMatriz();
 		mx.Triplet(mx.matriz);
 	}

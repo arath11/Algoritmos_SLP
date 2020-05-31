@@ -7,17 +7,14 @@ import org.opt4j.core.genotype.PermutationGenotype;
 import org.opt4j.operators.crossover.Pair;
 
 public class Crossover {
-    public static ArrayList<Integer> stick = new ArrayList<Integer>(),
-            						 stick2 = new ArrayList<Integer>(),
-            						 hijo1,
-            						 hijo2;
+    public static Individuo hijo1, hijo2;
 
     
-    public static void combinar(ArrayList<Integer> a1, ArrayList<Integer> a2) {
+    public static void combinar(Individuo a1, Individuo a2) {
     	Random random = new Random();
     	
-    	PermutationGenotype<Integer> p1 = new PermutationGenotype<Integer>(a1);
-    	PermutationGenotype<Integer> p2 = new PermutationGenotype<Integer>(a2);
+    	PermutationGenotype<Integer> p1 = new PermutationGenotype<>(a1.list);
+    	PermutationGenotype<Integer> p2 = new PermutationGenotype<>(a2.list);
 
     	PermutationGenotype<Object> o1 = p1.newInstance();
         PermutationGenotype<Object> o2 = p2.newInstance();
@@ -49,25 +46,11 @@ public class Crossover {
                         }
                 }
         }
-
         Pair<PermutationGenotype<?>> offspring = new Pair<PermutationGenotype<?>>(o1, o2);
-        hijo1 = (ArrayList<Integer>) offspring.getFirst();
-        hijo2 = (ArrayList<Integer>) offspring.getSecond();
-    }
+        ArrayList<Integer> h1 = (ArrayList<Integer>) offspring.getFirst();
+        ArrayList<Integer> h2 = (ArrayList<Integer>) offspring.getSecond();
 
-   public static void imprimir(int entrada) {
-        if(entrada==1){
-            System.out.println();
-            System.out.println("Etiquetas");
-            for (int i = 0; i < stick.size(); i++) {
-                System.out.print(stick.get(i) + " ");
-            }
-        }else {
-            System.out.println();
-            System.out.println("Etiquetas2");
-            for (int i = 0; i < stick2.size(); i++) {
-                System.out.print(stick2.get(i) + " ");
-            }
-        }
+        hijo1 = new Individuo(Grafo.sumMinIndividuo(h1), h1);
+        hijo2 = new Individuo(Grafo.sumMinIndividuo(h2), h2);
     }
 }

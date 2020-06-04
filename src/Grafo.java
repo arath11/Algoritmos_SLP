@@ -3,33 +3,41 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
-import org.opt4j.operators.mutate.MutatePermutationSwap;
+import org.opt4j.core.genotype.PermutationGenotype;
+import org.opt4j.operators.crossover.Pair;
+
 
 public class Grafo {
 	//Atributos
-	public static int n, cont = 1, contador = 0;
+	public static int n, iteraciones = 5;
 	public static ArrayList<Integer> array1 = new ArrayList<Integer>(),
-									 array2 = new ArrayList<Integer>(),
-									 v = new ArrayList<Integer>();
+			array2 = new ArrayList<Integer>(),
+			v = new ArrayList<Integer>();
+	public static PermutationGenotype<Integer> genotype;
 	public static ArrayList<Individuo> population = new ArrayList<Individuo>(),
-									   populationNext = new ArrayList<Individuo>(),
-									   populationSuperviviente = new ArrayList<Individuo>(),
-									   populationHijos = new ArrayList<Individuo>(),
-			                           populationTotal = new ArrayList<Individuo>();
-	public static Integer minDefinitivo, minTmp, cantIndividuos, cantPoblaciones;
-	public static ArrayList<ArrayList<Integer>> pob2 = new ArrayList<ArrayList<Integer>>();
-	
-	//Generaci髇 de poblaci髇
+			populationSuperviviente = new ArrayList<Individuo>(),
+			populationHijosElegidos = new ArrayList<Individuo>(),
+			populationHijos = new ArrayList<Individuo>(),
+			populationTotal = new ArrayList<Individuo>();
+	public static Integer minDefinitivo, minTmp, cantIndividuos;
+
+	//Generaci贸n de poblaci贸n
 	public static void poblacion(ArrayList<Integer> v) {
 		for (Integer i = 0; i < cantIndividuos; i++) {
-			Permutacion.Permutacion(v);
-			population.add(new Individuo(sumMinIndividuo(v),v));
+			PermutationGenotype<Integer> pm = permutation(v);
+			population.add(new Individuo(sumMinIndividuo(pm),pm));
 		}
-		torneoBinario(population);
 	}
-	
-	//Selecci髇 de cruza(Torneo Binario)
-	public static void torneoBinario(ArrayList<Individuo> individuo) {
+
+	//Pemutaci贸n
+	public static PermutationGenotype<Integer> permutation(ArrayList<Integer> v){
+		genotype = new PermutationGenotype<Integer>(v);
+		genotype.init(new Random());
+		return new PermutationGenotype<Integer>(genotype);
+	}
+
+	//Selecci贸n de cruza(Torneo Binario)
+	public static void torneoBinario() {
 		//Random
 		Random random = new Random();
 		//Torneo
@@ -37,7 +45,7 @@ public class Grafo {
 		Individuo peleador2 = new Individuo();
 		Individuo peleador3 = new Individuo();
 		Individuo peleador4 = new Individuo();
-		
+
 		Individuo ganadorTorneo1 = new Individuo();
 		Individuo ganadorTorneo2 = new Individuo();
 
@@ -45,52 +53,51 @@ public class Grafo {
 			//Primer torneo
 			Integer tmp = random.nextInt(population.size());
 			peleador1 = population.get(tmp);
-			
+
 			Integer tmp2 = random.nextInt(population.size());
 			while(tmp == tmp2) {
 				tmp2 = random.nextInt(population.size());
 			}
 			peleador2 = population.get(tmp2);
-			
+
 			if(peleador1.minimo < peleador2.minimo) {
 				ganadorTorneo1 = peleador1;
 			} else {
 				ganadorTorneo1 = peleador2;
 			}
-			
+
 			//Segundo torneo
 			Integer tmp3 = random.nextInt(population.size());
 			peleador3 = population.get(tmp3);
-			
+
 			Integer tmp4 = random.nextInt(population.size());
 			while(tmp3 == tmp4) {
 				tmp4 = random.nextInt(population.size());
 			}
 			peleador4 = population.get(tmp4);
-			
-			
+
+
 			if(peleador3.minimo < peleador4.minimo) {
 				ganadorTorneo2 = peleador3;
 			} else {
 				ganadorTorneo2 = peleador4;
 			}
-			
+
 			//Cruza de campeones
-			cruza(ganadorTorneo1, ganadorTorneo2);					
+			cruza(ganadorTorneo1, ganadorTorneo2);
 		}
-		Supervivientes();
 	}
-	
+
 	//Cruza
 	public static void cruza(Individuo ganadorTorneo1, Individuo ganadorTorneo2) {
 		//Hijos
-		Crossover.combinar(ganadorTorneo1, ganadorTorneo2);
-		populationHijos.add(Crossover.hijo1);
-		populationHijos.add(Crossover.hijo2);
+		Pair<PermutationGenotype<?>> pair = Crossover.combinar(ganadorTorneo1, ganadorTorneo2);
+		populationHijos.add(new Individuo(sumMinIndividuo((ArrayList<Integer>) pair.getFirst()), (ArrayList<Integer>) pair.getFirst()));
+		populationHijos.add(new Individuo(sumMinIndividuo((ArrayList<Integer>) pair.getSecond()), (ArrayList<Integer>) pair.getSecond()));
 	}
-	
-	//Supervivientes (Hijos despu閟 de la guerra)
-	public static void Supervivientes() {
+
+	//Hijo elegidos
+	public static void hijosElegidos() {
 		//Randomizer
 		ArrayList<Integer> random = new ArrayList<Integer>();
 		for(Integer i = 0; i < populationHijos.size(); i++) {
@@ -98,137 +105,75 @@ public class Grafo {
 		}
 		Collections.shuffle(random);
 		//---------------------------------------------------
-		//Supervivientes
+		//Elegidos
 		for(int i = 0; i < population.size(); i++) {
-			populationSuperviviente.add(populationHijos.get(random.get(i)));
+			populationHijosElegidos.add(populationHijos.get(random.get(i)));
 		}
-		Mutacion();
 	}
-	
+
 	//Mutacion de los supervivientes
 	public static void Mutacion() {
-		for(Integer i = 0; i < populationSuperviviente.size(); i++) {
-			populationSuperviviente.set(i, MutatePermutatationSwap.mutate(populationSuperviviente.get(i)));
+		for(Integer i = 0; i < populationHijosElegidos.size(); i++) {
+			populationHijosElegidos.set(i, MutatePermutatationSwap.mutate(populationHijosElegidos.get(i)));
 		}
-		busquedaLocal();
-		//seleccionFinal();
 	}
-	
-	
-	//B鷖queda local 
+
+	//B煤squeda local
 	public static void busquedaLocal() {
-		for(Integer k = 0; k < populationSuperviviente.size(); k++) {
-			//System.out.println("***************");
-			//System.out.println();
+		for(Integer k = 0; k < populationHijosElegidos.size(); k++) {
 			Individuo original = new Individuo();
-			Individuo nuevo = new Individuo();
-			original = populationSuperviviente.get(k);
-			int i2=0;
-			int j2=0;
-			int nuevo1=0;
+			original = populationHijosElegidos.get(k);
+			Integer i2 = 0;
+			Integer j2 = 0;
+			Integer nuevo1 = 0;
 			for(Integer i = 0; i < original.list.size(); i++) {
-				//System.out.println("______________________");
 				for(Integer j = i + 1; j < original.list.size(); j++) {
-					//swap(tmp,i,j);
-					//System.out.println(populationSuperviviente.get(k).minimo);
-					swap(populationSuperviviente.get(k),i,j);
-					nuevo1=populationSuperviviente.get(k).minimo;
-					//System.out.println(populationSuperviviente.get(k).minimo+" SWAP"+nuevo.minimo);
-					//reswap
-					//break;
-					i2=i;
-					j2=j;
-					swap(populationSuperviviente.get(k),i,j);
-					//System.out.println();
-					//System.out.println("___"+nuevo1);
-					//System.out.println(populationSuperviviente.get(k).minimo+" PostSawp");
-					
-					//System.out.println();
-		
+					swap(populationHijosElegidos.get(k),i,j);
+					nuevo1 = populationHijosElegidos.get(k).minimo;
+
+					i2 = i;
+					j2 = j;
+					swap(populationHijosElegidos.get(k),i,j);
+
+
 					if(original.minimo > nuevo1) {
-		//				System.out.println(original.minimo+"vs"+nuevo1+"-------"+minTmp);
-						swap(populationSuperviviente.get(k),i2,j2);
-						//populationSuperviviente.set(k, nuevo);
-						//original=nuevo;
-						//System.out.println(populationSuperviviente.get(k).minimo+"____");
-					} 
-			
-				}
-					//System.out.println(original.minimo+"tmp");
-				//if(minTmp!=null) {
-			
-					//if(original.minimo > nuevo1 && minTmp>original.minimo) {
-						
-				
-			
-			}
-			//break;
-			
-		}
+						swap(populationHijosElegidos.get(k),i2,j2);
+					}
 
-		
-		seleccionFinal();
+				}
+
+			}
+		}
 	}
-	/*
-	public static void busquedaLocal() {
-		for(Integer k = 0; k < populationSuperviviente.size(); k++) {
-			Individuo best = new Individuo();
-			Individuo tmp = new Individuo();
-			tmp = populationSuperviviente.get(k);
-			int i2=0;
-			int j2=0;
-			
-			for(Integer i = 0; i < tmp.list.size(); i++) {
-				for(Integer j = i + 1; j < tmp.list.size(); j++) {
-					//swap(tmp,i,j);
-					swap(populationSuperviviente.get(k),i,j);
-					//reswap
-					i2=i;
-					j2=j;
-					swap(populationSuperviviente.get(k),i2,j2);
-				}
-					System.out.println(best.minimo+"tmp");
-				if(tmp.minimo > best.minimo) {
-					populationSuperviviente.set(k, tmp);
-					best = tmp;
-					System.out.println(populationSuperviviente.get(k).minimo+"____");
-				} 
-			}
-		}
 
-		
-		seleccionFinal();
-	}*/
-	
-	//Swap de b鷖queda local
+	//Swap de b煤squeda local
 	public static Individuo swap(Individuo ind, Integer i, Integer j) {
 		Integer tmp1 = 0,
 				tmp2 = 0;
-		
-		tmp1 = ind.list.get(i); 
-     	tmp2 = ind.list.get(j);
-     	
-		ind.list.set(i, tmp2); 
-		ind.list.set(j, tmp1); 
+
+		tmp1 = ind.list.get(i);
+		tmp2 = ind.list.get(j);
+
+		ind.list.set(i, tmp2);
+		ind.list.set(j, tmp1);
 		ind.minimo = sumMinIndividuo(ind.list);
 		return ind;
 	}
-	
+
 	//Merge de popblacion original con la mejorada
-	public static void seleccionFinal() {
+	public static void seleccionSupervivientes() {
 		//Merge de P y P'
 		populationTotal.addAll(population);
-		populationTotal.addAll(populationSuperviviente);
+		populationTotal.addAll(populationHijosElegidos);
 		Collections.sort(populationTotal);
-		
-		//El mejor de toda la poblaci髇
+
+		//El mejor de toda la poblaci贸n
 		minTmp = populationTotal.get(0).minimo;
-		System.out.println(minTmp+" Mejor actual");
-		//Siguiente generaci髇 (45 mejores)
+		//Siguiente generaci贸n (45 mejores)
 		for(Integer i = 0; i < population.size() - 5; i++) {
-			populationNext.add(populationTotal.get(i));
+			populationSuperviviente.add(populationTotal.get(i));
 		}
-		
+
 		//Randomizer
 		ArrayList<Integer> random = new ArrayList<Integer>();
 		for(Integer i = population.size() - 5; i < populationTotal.size(); i++) {
@@ -236,17 +181,17 @@ public class Grafo {
 		}
 		Collections.shuffle(random);
 		//----------------------------------------------------------
-		//Diversidad en la poblaci髇
+		//Diversidad en la poblaci贸n
 		for(Integer i = 0; i < 5; i++) {
-			populationNext.add(populationTotal.get(random.get(i)));
+			populationSuperviviente.add(populationTotal.get(random.get(i)));
 		}
 	}
 
-	//Sacar m韓imos
+	//Sacar m铆nimos
 	public static Integer sumMinIndividuo(ArrayList<Integer> arrayList) {
 		// Operaciones
 		Integer minAcum = 0;
-		
+
 		for (int i = 0; i < array1.size(); i++) {
 			if (arrayList.get(array1.get(i)) < arrayList.get(array2.get(i))) {
 				minAcum += arrayList.get(array1.get(i));
@@ -257,71 +202,91 @@ public class Grafo {
 		return (minAcum);
 	}
 
+	//M茅todo main
 	public static void main(String[] args) {
-
+		//Lectura de instancias
 		Scanner sc = new Scanner(System.in);
-		n = sc.nextInt();
+		try {
+			n = sc.nextInt();
 
-		//Lectura
-		int a1 = 0, a2 = 0;
-		while (true) {
-			a1 = sc.nextInt();
-			if(a1 == -1) {
-				break;
+			//Lectura
+			int a1 = 0, a2 = 0;
+			while (true) {
+				a1 = sc.nextInt();
+				if(a1 == -1) {
+					break;
+				}
+				a2 = sc.nextInt();
+				if(a2 == -1) {
+					System.out.println("Ingreso los datos incorrectamente");
+					return;
+				}
+				array1.add(a1);
+				array2.add(a2);
 			}
-			a2 = sc.nextInt();
-			if(a2 == -1) {
-				System.out.println("Ingreso los datos incorrectamente");
-				return;
-			}
-			array1.add(a1);
-			array2.add(a2);
-	    }
-	
+		} catch(Exception e) {
+			System.out.print("Entada incorrecta");
+			return;
+		}
+
+		Long startTime = System.currentTimeMillis();
+
 		quitarRepetidos(array1,array2);
 
 		// Rellenar
-		//ArrayList<Integer> arre = new ArrayList<Integer>();
 		for (Integer i = 1; i <= n; i++) {
 			v.add(i);
 		}
 
 		// Tiene que ser par
 		cantIndividuos = 50;
-				
+
 		boolean flag = true;
-		
+
+		//Primera vez que se genera la poblacion
 		poblacion(v);
-		
+		torneoBinario();
+		hijosElegidos();
+		Mutacion();
+		busquedaLocal();
+		seleccionSupervivientes();
+
 		minDefinitivo = minTmp;
 		Integer cont = 0;
-		long ReyPonUnContador=0;
 		while(flag) {
-			ReyPonUnContador++;
-			population = (ArrayList<Individuo>) populationNext.clone();
+			//La poblacion original ahora es la P'
+			population = (ArrayList<Individuo>) populationSuperviviente.clone();
 			//Borrar poblaciones temporales
 			populationHijos.clear();
+			populationHijosElegidos.clear();
 			populationSuperviviente.clear();
-			populationNext.clear();
 			populationTotal.clear();
-			
-			torneoBinario(population);
-			
+
+			//Se repite el ciclo
+			torneoBinario();
+			hijosElegidos();
+			Mutacion();
+			busquedaLocal();
+			seleccionSupervivientes();
+
 			if(minTmp < minDefinitivo) {
 				minDefinitivo = minTmp;
 				cont = 0;
 			} else {
 				cont++;
-				if(cont == 50) {
+				if(cont == iteraciones) {
 					break;
 				}
 			}
-			
+
 		}
-		System.out.println(ReyPonUnContador);
-		System.out.println("Total: " + minDefinitivo);
+		System.out.println("M铆nimo total: " + minDefinitivo);
+		System.out.println("Etiquetado m铆nimo: " + populationTotal.get(0).list);
+		Long endTime = System.currentTimeMillis();
+		Long duration = (endTime - startTime);  //Total execution time in milli seconds
+		System.out.println("Tiempo de ejecuci贸n: " + duration + " milisegundos");
 	}
-	
+
 	public static void quitarRepetidos(ArrayList<Integer> array1, ArrayList<Integer> array2) {
 		for (int i = 0; i < array1.size(); i++) {
 			for(int j = 0; j < array2.size();j++) {
@@ -332,37 +297,4 @@ public class Grafo {
 			}
 		}
 	}
-}
-
-
-class Individuo implements Comparable<Individuo> {
-	public Integer minimo;
-	public ArrayList<Integer> list;
-
-	public Individuo() {
-		this.minimo = 0;
-		this.list = new ArrayList<Integer>();
-	}
-	
-	public Individuo(Individuo ind) {
-		this.minimo = ind.minimo;
-		this.list = ind.list;
-	}
-
-	public Individuo(Integer minimo, ArrayList<Integer> list) {
-		this.minimo = minimo;
-		this.list = list;
-	}
-
-	@Override
-	public int compareTo(Individuo ind) {
-		if (minimo < ind.minimo) {
-			return -1;
-		}
-		if (minimo > ind.minimo) {
-			return 1;
-		}
-		return 0;
-	}
-
 }
